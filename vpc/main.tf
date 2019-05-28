@@ -13,14 +13,15 @@ resource "aws_vpc" "labs1_vpc" {
   }
 }
 
-###### Subnet ######
-resource "aws_subnet" "labs1_public" {
-  cidr_block        = "${var.subnet_cidr}"
-  availability_zone = "${var.aws_region}a"
+###### Subnet 2 ######
+resource "aws_subnet" "labs1" {
+  count = 2
+  cidr_block        = "${element(var.subnet_cidr, count.index)}"
+  availability_zone = "${element(var.aws_azs, count.index)}"
   vpc_id            = "${aws_vpc.labs1_vpc.id}"
 
   tags {
-    Name = "Labs1"
+    Name = "${element(var.vpc_subnet_names, count.index)}"
   }
 }
 
@@ -48,7 +49,8 @@ resource "aws_route_table" "labs1_rt" {
 }
 
 ###### Route table association with public subnets ######
-resource "aws_route_table_association" "labs1_art" {
-  subnet_id      = "${aws_subnet.labs1_public.id}"
+resource "aws_route_table_association" "subnets" {
+  count          = "${length(var.subnet_cidr)}"
+  subnet_id      = "${element(aws_subnet.labs1.*.id, count.index)}"
   route_table_id = "${aws_route_table.labs1_rt.id}"
 }

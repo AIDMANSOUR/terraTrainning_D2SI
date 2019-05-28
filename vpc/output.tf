@@ -13,10 +13,10 @@ output "aws_route_table.labs1_rt_id" {
 #  description = "Association Route table"
 #}
 
-output "aws_subnet.labs1_public_id" {
-  value       = "${aws_subnet.labs1_public.id}"
-  description = "subnet Id"
-}
+#output "aws_subnet.labs1_public_id" {
+#  value       = "${aws_subnet.labs1_public_1a.id}"
+#  description = "subnet Id"
+#}
 
 output "aws_vpc.labs1_vpc_id" {
   value       = "${aws_vpc.labs1_vpc.id}"
