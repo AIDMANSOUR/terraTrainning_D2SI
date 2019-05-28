@@ -38,7 +38,7 @@ resource "aws_route_table" "labs1_rt" {
   vpc_id = "${aws_vpc.labs1_vpc.id}"
 
   route {
-    cidr_block = "$ ${var.route_cidr}"
+    cidr_block = "${var.route_cidr}"
     gateway_id = "${aws_internet_gateway.labs1_igw.id}"
   }
 
