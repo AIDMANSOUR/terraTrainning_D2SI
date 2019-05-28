@@ -9,7 +9,7 @@ resource "aws_vpc" "labs1_vpc" {
   instance_tenancy = "dedicated"
 
   tags = {
-    Name = "labs1"
+    Name = "labs1-VPC"
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "labs1_igw" {
   vpc_id = "${aws_vpc.labs1_vpc.id}"
 
   tags = {
-    Name = "Labs1"
+    Name = "labs1-IGW"
   }
 }
 
@@ -44,7 +44,7 @@ resource "aws_route_table" "labs1_rt" {
   }
 
   tags {
-    Name = "labs1"
+    Name = "labs1-route-table"
   }
 }
 

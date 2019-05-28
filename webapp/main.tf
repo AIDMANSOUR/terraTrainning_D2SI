@@ -29,6 +29,9 @@ resource "aws_security_group" "allow_all" {
         protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    tags{
+      Name = "labs1-SG"
+    }
   }
 
 ############
@@ -72,7 +75,8 @@ resource "aws_instance" "web" {
   key_name = "${aws_key_pair.ansible.key_name}"  # assign ssh ansible key
   vpc_security_group_ids = ["${aws_security_group.allow_all.id}"] 
   user_data = "${data.template_file.template_labs.rendered}"
-  subnet_id = "${data.terraform_remote_state.rs-vpc.aws_labs1_vpc_id}"
+  subnet_id = "${data.terraform_remote_state.rs-vpc.aws_labs1_subnet}"
+  
     tags {
-      Name = "HelloWorld" }
+      Name = "labs1-HelloWorld" }
 }
