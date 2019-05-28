@@ -5,7 +5,7 @@ provider "aws" {
 
 ###### VPC ######
 resource "aws_vpc" "labs1_vpc" {
-  cidr_block       = "172.23.0.0/16"
+  cidr_block       = "${var.vpc_cidr}"
   instance_tenancy = "dedicated"
 
   tags = {
@@ -15,7 +15,7 @@ resource "aws_vpc" "labs1_vpc" {
 
 ###### Subnet ######
 resource "aws_subnet" "labs1_public" {
-  cidr_block        = "172.23.1.0/24"
+  cidr_block        = "${var.subnet_cidr}"
   availability_zone = "${var.aws_region}a"
   vpc_id            = "${aws_vpc.labs1_vpc.id}"
 
@@ -38,7 +38,7 @@ resource "aws_route_table" "labs1_rt" {
   vpc_id = "${aws_vpc.labs1_vpc.id}"
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = "$ ${var.route_cidr}"
     gateway_id = "${aws_internet_gateway.labs1_igw.id}"
   }
 
