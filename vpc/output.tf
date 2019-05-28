@@ -18,7 +18,10 @@ output "aws_route_table.labs1_rt_id" {
 #  description = "subnet Id"
 #}
 
-output "aws_vpc.labs1_vpc_id" {
+output "aws_labs1_vpc_id" {
   value       = "${aws_vpc.labs1_vpc.id}"
   description = "subnet Id"
+}
+output "aws_labs1_subnet"{
+  value = "${aws_subnet.labs1.0.id}"
 }
