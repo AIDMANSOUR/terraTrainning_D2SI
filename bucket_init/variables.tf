@@ -9,7 +9,7 @@ variable "vpc_cidr" {
 }
 
 variable "subnet_cidr" {
-	default = "172.23.1.0/24"
+	default = "172.23.100.0/24"
   description = " cidr block du subnet"
 }
 

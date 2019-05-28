@@ -9,7 +9,7 @@ bucket = "my-tfstat-bucket"
 acl = "private"
 
 tags {
-    Name = "labs1"
+    Name = "labs1-S3"
   }
 }
 
