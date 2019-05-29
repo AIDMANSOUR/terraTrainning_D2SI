@@ -6,7 +6,6 @@ provider "aws" {
 ###### VPC ######
 resource "aws_vpc" "labs1_vpc" {
   cidr_block       = "${var.vpc_cidr}"
-  instance_tenancy = "dedicated"
 
   tags = {
     Name = "labs1-VPC"

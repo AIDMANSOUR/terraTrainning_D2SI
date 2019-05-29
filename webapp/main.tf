@@ -6,7 +6,7 @@ provider "aws" {
 data "terraform_remote_state" "rs-vpc"{ 
     backend = "s3"
     config {
-        bucket = "my-tfstat-bucket"
+        bucket = "my-tfstat-bucket1"
         key = "vpc/terraform.tfstat" 
         region = "eu-west-1"
         }
@@ -23,6 +23,12 @@ resource "aws_security_group" "allow_all" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
    egress {
         from_port = 0
         to_port = 0
@@ -33,6 +39,7 @@ resource "aws_security_group" "allow_all" {
       Name = "labs1-SG"
     }
   }
+
 
 ############
 # SSH keys #
@@ -71,11 +78,12 @@ data "template_file" "template_labs" {
 
 resource "aws_instance" "web" {
   ami = "${data.aws_ami.ubuntu.id}"
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
   key_name = "${aws_key_pair.ansible.key_name}"  # assign ssh ansible key
   vpc_security_group_ids = ["${aws_security_group.allow_all.id}"] 
   user_data = "${data.template_file.template_labs.rendered}"
   subnet_id = "${data.terraform_remote_state.rs-vpc.aws_labs1_subnet}"
+  associate_public_ip_address = "true"
   
     tags {
       Name = "labs1-HelloWorld" }

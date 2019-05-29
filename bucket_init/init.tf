@@ -5,7 +5,7 @@ provider "aws" {
 
 ## Bucket pour le tfstate"
 resource "aws_s3_bucket" "terraform_backend" {
-bucket = "my-tfstat-bucket"
+bucket = "my-tfstat-bucket1"
 acl = "private"
 
 tags {
