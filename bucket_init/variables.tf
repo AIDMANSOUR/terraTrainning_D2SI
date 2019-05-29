@@ -17,3 +17,7 @@ variable "route_cidr" {
 	default = "0.0.0.0/0"
   description = " cidr block de la route table"
 }
+
+variable "image_id"{
+  default = "ami-078bc5c67fee3e055"
+}

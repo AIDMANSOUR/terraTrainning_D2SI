@@ -23,5 +23,5 @@ output "aws_labs1_vpc_id" {
   description = "subnet Id"
 }
 output "aws_labs1_subnet"{
-  value = "${aws_subnet.labs1.0.id}"
+  value = "${aws_subnet.labs1.*.id}"
 }

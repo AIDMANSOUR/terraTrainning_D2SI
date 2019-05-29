@@ -62,10 +62,10 @@ data "aws_ami" "ubuntu" {
 
       filter {
         name = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+        values = ["pretty_ami_ali*"]
         } 
 
-    owners = ["099720109477"] # Canonical
+    owners = ["self"] # Canonical
 }
 
 data "template_file" "template_labs" {
@@ -75,7 +75,7 @@ data "template_file" "template_labs" {
     username = "aidmansour"
   }
 }
-
+/*
 resource "aws_instance" "web" {
   ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t3.micro"
@@ -87,4 +87,61 @@ resource "aws_instance" "web" {
   
     tags {
       Name = "labs1-HelloWorld" }
+}
+*/
+
+resource "aws_launch_configuration" "webappconf" {
+  name_prefix          = "webapp_config"
+  image_id      = "${data.aws_ami.ubuntu.id}"
+  instance_type = "t2.micro"
+  security_groups = ["${aws_security_group.allow_all.id}"] 
+  key_name = "ansible-key"
+  user_data = "${data.template_file.template_labs.rendered}"
+
+  lifecycle {
+    create_before_destroy = "true"
+  }
+}
+
+resource "aws_autoscaling_group" "webappscal" {
+  vpc_zone_identifier =["${data.terraform_remote_state.rs-vpc.aws_labs1_subnet[0]}","${data.terraform_remote_state.rs-vpc.aws_labs1_subnet[1]}"]
+  name = "asg-${aws_launch_configuration.webappconf.name}"
+  max_size           = 1
+  min_size           = 1
+  health_check_grace_period = 300
+  health_check_type = "EC2"
+  launch_configuration = "${aws_launch_configuration.webappconf.name}"
+  load_balancers = ["${aws_elb.webappelb.id}"]
+
+  tags = [
+    {
+      key = "Name"
+      value = "autoscaledserver"
+      propagate_at_launch = true
+    }
+  ]
+   lifecycle {
+    create_before_destroy = "true"
+  }
+}
+
+resource "aws_elb" "webappelb" {
+  name = "web-elb"
+  subnets = ["${data.terraform_remote_state.rs-vpc.aws_labs1_subnet[0]}","${data.terraform_remote_state.rs-vpc.aws_labs1_subnet[1]}"]
+  security_groups = ["${aws_security_group.allow_all.id}"]
+  ## Loadbalancer configuration
+  listener {
+  instance_port = 80
+  instance_protocol = "http"
+  lb_port = 80
+  lb_protocol = "http"
+  }
+
+  health_check {
+  healthy_threshold = 2
+  unhealthy_threshold = 2
+  timeout = 2
+  target = "HTTP:80/"
+  interval = 5
+  }
 }
